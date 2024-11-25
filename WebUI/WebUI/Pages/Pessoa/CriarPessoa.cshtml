@@ -11,21 +11,25 @@
         <div class="form-group">
             <label for="NomeCompleto">Nome Completo</label>
             <input asp-for="Pessoa.NomeCompleto" class="form-control" />
+            <span asp-validation-for="Pessoa.NomeCompleto" class="text-danger"></span>
         </div>
 
         <div class="form-group">
             <label for="CPF">CPF</label>
             <input asp-for="Pessoa.CPF" class="form-control" />
+            <span asp-validation-for="Pessoa.CPF" class="text-danger"></span>
         </div>
 
         <div class="form-group">
             <label for="Email">Email</label>
             <input asp-for="Pessoa.Email" class="form-control" />
+            <span asp-validation-for="Pessoa.Email" class="text-danger"></span>
         </div>
 
         <div class="form-group">
             <label for="Telefone">Telefone</label>
             <input asp-for="Pessoa.Telefone" class="form-control" />
+            <span asp-validation-for="Pessoa.Telefone" class="text-danger"></span>
         </div>
 
         <h3 class="mt-4">Endereços</h3>
@@ -35,34 +39,42 @@
                 <div class="form-group">
                     <label>Bairro</label>
                     <input name="Pessoa.Enderecos[0].Bairro" class="form-control" />
+                    <span asp-validation-for="Pessoa.Enderecos[0].Bairro" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label>Cidade</label>
                     <input name="Pessoa.Enderecos[0].Cidade" class="form-control" />
+                    <span asp-validation-for="Pessoa.Enderecos[0].Cidade" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label>Estado</label>
                     <input name="Pessoa.Enderecos[0].Estado" class="form-control" />
+                    <span asp-validation-for="Pessoa.Enderecos[0].Estado" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label>CEP</label>
                     <input name="Pessoa.Enderecos[0].CEP" class="form-control" />
+                    <span asp-validation-for="Pessoa.Enderecos[0].CEP" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label>Tipo de Endereço</label>
                     <input name="Pessoa.Enderecos[0].TipoEndereco" class="form-control" />
+                    <span asp-validation-for="Pessoa.Enderecos[0].TipoEndereco" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label>Logradouro</label>
                     <input name="Pessoa.Enderecos[0].Logradouro" class="form-control" />
+                    <span asp-validation-for="Pessoa.Enderecos[0].Logradouro" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label>Número</label>
                     <input name="Pessoa.Enderecos[0].Numero" class="form-control" />
+                    <span asp-validation-for="Pessoa.Enderecos[0].Numero" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label>Complemento</label>
                     <input name="Pessoa.Enderecos[0].Complemento" class="form-control" />
+                    <span asp-validation-for="Pessoa.Enderecos[0].Complemento" class="text-danger"></span>
                 </div>
                 <button type="button" class="btn btn-danger btn-sm" onclick="removeEndereco(this)">Remover Endereço</button>
                 <hr />
@@ -75,6 +87,8 @@
 </div>
 
 @section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
     <script>
         let enderecoIndex = 0;
 

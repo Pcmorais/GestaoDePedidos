@@ -133,9 +133,11 @@
 {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            var successMessage = @Html.Raw(JsonSerializer.Serialize(TempData["SuccessMessage"] ?? "Pedido criado com sucesso"));
             Swal.fire({
                 title: "Sucesso!",
                 text: "@TempData["SuccessMessage"]",
+                text: successMessage,
                 icon: "success",
                 confirmButtonColor: '#3085d6'
             });
@@ -146,10 +148,12 @@
 @if (TempData["ErrorMessage"] != null)
 {
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function () {\
+            var errorMessage = @Html.Raw(JsonSerializer.Serialize(TempData["ErrorMessage"] ?? "Ocorreu um erro"));
             Swal.fire({
                 title: "Erro!",
                 text: "@TempData["ErrorMessage"]",
+                text: errorMessage,
                 icon: "error",
                 confirmButtonColor: '#d33'
             });

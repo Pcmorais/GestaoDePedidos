@@ -58,7 +58,7 @@ namespace GestaoPedidos.Application.Servicos
 
             await _pessoaRepositorio.AddAsync(pessoa);
 
-            return Result.Ok("Produto cadastrado com sucesso.");
+            return Result.Ok("Pessoa cadastrada com sucesso.");
         }
 
         public async Task<Pessoa?> ObtenhaPeloId(int id) => await _pessoaRepositorio.GetByIdAsync(id);

@@ -35,7 +35,7 @@ namespace GestaoPedidos.Controllers
                     return Ok(resultado.Value);
                 }
 
-                return BadRequest(new { Erro = resultado.Error });
+                return BadRequest(resultado.Error);
             }
             catch (Exception ex)
             {

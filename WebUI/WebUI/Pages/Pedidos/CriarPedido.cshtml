@@ -111,7 +111,7 @@
 
             // Preenche com os novos endereços
             enderecos.forEach(endereco => {
-                let option = `<option value="${endereco.id}">${endereco.logradouro}, ${endereco.numero}</option>`;
+                let option = `<option value="${endereco.id}"> ${endereco.cep}, ${endereco.logradouro}, ${endereco.numero}</option>`;
                 entregaSelect.innerHTML += option;
                 cobrancaSelect.innerHTML += option;
             });

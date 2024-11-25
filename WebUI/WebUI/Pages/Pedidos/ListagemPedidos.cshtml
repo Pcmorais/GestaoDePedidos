@@ -1,0 +1,114 @@
+﻿@page
+@model WebUI.Pages.Pedidos.PedidosModel
+@{
+    ViewData["Title"] = "Lista de Pedidos";
+}
+
+<div class="container mt-5">
+    <h1>@ViewData["Title"]</h1>
+
+    <!-- Filtro -->
+    <form method="get" class="mb-4">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="FiltroNome">Nome</label>
+                    <input type="text" id="FiltroNome" name="nome" value="@Model.FiltroNome" class="form-control" placeholder="Digite o nome" />
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="FiltroDataPedido">Data inicio do Pedido</label>
+                    <input type="date" id="FiltroDataPedidoInicio" name="dataPedidoInicio" value="@Model.FiltroDataPedidoInicio" class="form-control" />
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="FiltroDataPedido">Data fim do Pedido</label>
+                    <input type="date" id="FiltroDataPedidoFim" name="dataPedidoFim" value="@Model.FiltroDataPedidoFim" class="form-control" />
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="FiltroId">Código</label>
+                    <input type="number" id="FiltroId" name="id" value="@Model.FiltroId" class="form-control" placeholder="Digite o código" />
+                </div>
+            </div>
+        </div>
+        <!-- Botões lado a lado -->
+        <div class="d-flex align-items-end mt-3">
+            <button type="submit" class="btn btn-primary me-2">Filtrar</button>
+
+            <!-- Formulário de Download com Sincronização -->
+            <button type="button" class="btn btn-success" onclick="submitDownloadForm()">
+                <i class="bi bi-download"></i> Baixar Excel
+            </button>
+        </div>
+    </form>
+
+    <!-- Formulário Oculto para Download -->
+    <form id="downloadForm" method="post" asp-page-handler="DownloadExcel" class="d-none">
+        <input type="hidden" name="nome" id="hiddenNome" />
+        <input type="hidden" name="dataPedidoInicio" id="hiddenDataInicio" />
+        <input type="hidden" name="dataPedidoFim" id="hiddenDataFim" />
+        <input type="hidden" name="id" id="hiddenId" />
+    </form>
+
+    <!-- Tabela de Listagem -->
+    @if (Model.Pedidos.Any())
+    {
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Código</th>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Data do Pedido</th>
+                    <th scope="col">Valor</th>
+                    <th scope="col">Detalhes</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var pedido in Model.Pedidos)
+                {
+                    <tr>
+                        <td>@pedido.Id</td>
+                        <td>@pedido.Nome</td>
+                        <td>@pedido.DataPedido</td>
+                        <td>@pedido.Valor.ToString("C2")</td>
+                        <td>
+                            <!-- Link para detalhes do pedido -->
+                            <a href="@Url.Page("/Pedidos/Detalhes", new { pedidoId = pedido.Id })" class="btn btn-info btn-sm">
+                                Ver Detalhes
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-warning" role="alert">
+            Nenhum pedido encontrado com os filtros aplicados.
+        </div>
+    }
+</div>
+
+@section Scripts
+{
+    <script>
+        function submitDownloadForm() {
+            // Captura valores dos campos de filtro
+            document.getElementById('hiddenNome').value = document.getElementById('FiltroNome').value;
+            document.getElementById('hiddenDataInicio').value = document.getElementById('FiltroDataPedidoInicio').value;
+            document.getElementById('hiddenDataFim').value = document.getElementById('FiltroDataPedidoFim').value;
+            document.getElementById('hiddenId').value = document.getElementById('FiltroId').value;
+
+            // Submete o formulário oculto
+            document.getElementById('downloadForm').submit();
+        }
+    </script>
+}

@@ -1,0 +1,208 @@
+﻿@page
+@model WebUI.Pages.Pedidos.CreatePedidoModel
+@{
+    ViewData["Title"] = "Novo Pedido";
+}
+
+<form id="pedidoForm" method="post">
+    <!-- Selecione o Cliente -->
+    <div class="form-group mb-4">
+        <label for="clienteSelect" class="font-weight-bold">Cliente</label>
+        <select id="clienteSelect" asp-for="Pedido.ClienteId" class="form-control" required onchange="buscarEnderecos()">
+            <option value="">Selecione um cliente</option>
+            @foreach (var cliente in Model.Pessoas)
+            {
+                <option value="@cliente.Id">@cliente.NomeCompleto</option>
+            }
+        </select>
+    </div>
+
+    <!-- Endereço de Entrega -->
+    <div class="form-group mb-4">
+        <label for="enderecoEntregaSelect" class="font-weight-bold">Endereço de Entrega</label>
+        <select id="enderecoEntregaSelect" asp-for="Pedido.EnderecoEntregaId" class="form-control" required></select>
+    </div>
+
+    <!-- Endereço de Cobrança -->
+    <div class="form-group mb-4">
+        <label for="enderecoCobrancaSelect" class="font-weight-bold">Endereço de Cobrança</label>
+        <select id="enderecoCobrancaSelect" asp-for="Pedido.EnderecoCobrancaId" class="form-control" required></select>
+    </div>
+
+    <!-- Adicionar Produtos -->
+    <div id="produtos" class="mb-4">
+        <h4 class="font-weight-bold">Adicionar Produtos</h4>
+        <div class="form-group">
+            <label for="produtoSelect">Produto</label>
+            <select id="produtoSelect" class="form-control">
+                @foreach (var produto in Model.Produtos)
+                {
+                    <option value="@produto.Id" data-preco="@produto.PrecoUnitario">@produto.Nome</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="quantidade">Quantidade</label>
+            <input type="number" id="quantidade" class="form-control" min="1" required />
+        </div>
+
+        <button type="button" class="btn btn-secondary mt-2" onclick="adicionarProduto()">Adicionar Produto</button>
+    </div>
+
+    <h4 class="font-weight-bold mb-3">Itens do Pedido</h4>
+    <table class="table table-striped table-bordered" id="tabelaItens">
+        <thead>
+            <tr>
+                <th>Produto</th>
+                <th>Quantidade</th>
+                <th>Preço Unitário</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <div class="text-right mt-4">
+        <button type="submit" class="btn btn-primary">Enviar Pedido</button>
+    </div>
+</form>
+
+
+@section Scripts {
+    <script>
+        let itens = [];
+
+        function buscarEnderecos() {
+            let clienteId = document.getElementById("clienteSelect").value;
+
+            if (clienteId) {
+                fetch(`/Pedidos/CriarPedido?handler=BuscarEnderecos&clienteId=${clienteId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value // CSRF Token
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Verifica se a resposta contém endereços ou uma mensagem de erro
+                        if (data.message) {
+                            alert(data.message); // Exibe mensagem de erro
+                        } else {
+                            // Atualiza o select com os endereços encontrados
+                            atualizarSelectEnderecos(data);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao buscar endereços:', error);
+                    });
+            }
+        }
+
+
+        function atualizarSelectEnderecos(enderecos) {
+            let entregaSelect = document.getElementById("enderecoEntregaSelect");
+            let cobrancaSelect = document.getElementById("enderecoCobrancaSelect");
+
+            // Limpa os selects anteriores
+            entregaSelect.innerHTML = "";
+            cobrancaSelect.innerHTML = "";
+
+            // Preenche com os novos endereços
+            enderecos.forEach(endereco => {
+                let option = `<option value="${endereco.id}">${endereco.logradouro}, ${endereco.numero}</option>`;
+                entregaSelect.innerHTML += option;
+                cobrancaSelect.innerHTML += option;
+            });
+        }
+
+        function adicionarProduto() {
+            let produtoSelect = document.getElementById("produtoSelect");
+            let produtoId = produtoSelect.value;
+            let produtoNome = produtoSelect.options[produtoSelect.selectedIndex].text;
+            let quantidade = parseInt(document.getElementById("quantidade").value);
+            let preco = parseFloat(produtoSelect.options[produtoSelect.selectedIndex].getAttribute("data-preco"));
+
+            itens.push({ ProdutoId: produtoId, Quantidade: quantidade, ValorUnitario: preco });
+            atualizarTabela();
+        }
+
+        function atualizarTabela() {
+            let tbody = document.getElementById("tabelaItens").getElementsByTagName("tbody")[0];
+            tbody.innerHTML = "";
+
+            itens.forEach(item => {
+                let row = tbody.insertRow();
+                row.insertCell(0).innerText = item.ProdutoId;
+                row.insertCell(1).innerText = item.Quantidade;
+                row.insertCell(2).innerText = item.ValorUnitario.toFixed(2);
+                row.insertCell(3).innerText = (item.Quantidade * item.ValorUnitario).toFixed(2);
+            });
+        }
+
+        function enviarPedido() {
+            // Coleta os dados do cliente e endereços
+            const pedido = {
+                ClienteId: parseInt(document.getElementById("clienteSelect").value),
+                EnderecoEntregaId: parseInt(document.getElementById("enderecoEntregaSelect").value),
+                EnderecoCobrancaId: parseInt(document.getElementById("enderecoCobrancaSelect").value),
+                DataPedido: new Date().toISOString(), // Envia a data no formato correto
+                Itens: itens.map(item => ({
+                    ProdutoId: parseInt(item.ProdutoId),
+                    NomeProduto: item.NomeProduto,
+                    Quantidade: parseInt(item.Quantidade),
+                    ValorUnitario: parseFloat(item.ValorUnitario),
+                    ValorTotal: parseFloat((item.Quantidade * item.ValorUnitario).toFixed(2)) // Calcula o ValorTotal
+                }))
+            };
+
+            // if (!pedido.ClienteId || !pedido.EnderecoEntregaId || !pedido.EnderecoCobrancaId || pedido.Itens.length === 0) {
+            //     alert("Preencha todos os campos obrigatórios e adicione pelo menos um produto.");
+            //     return;
+            // }
+
+            // Envia os dados via AJAX para o backend
+            fetch("/Pedidos/CriarPedido?handler=Submit", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "RequestVerificationToken": document.querySelector('input[name="__RequestVerificationToken"]').value // CSRF Token
+                },
+                body: JSON.stringify(pedido)
+            })
+                .then(response => response.json()) // Converte a resposta para JSON
+                .then(data => { // Usa o conteúdo JSON retornado
+                    if (data.ok) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Pedido Criado',
+                            text: data.message, // Acessa a mensagem do servidor
+                            showConfirmButton: true
+                        }).then(() => {
+                            window.location.reload(); // Redireciona ou limpa o formulário
+                        });
+                    } else {
+                        throw new Error(data.message); // Lança o erro com a mensagem retornada pelo servidor
+                    }
+                })
+                .catch(error => {
+                    console.error("Erro ao criar pedido:", error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro',
+                        text: error.message || 'Ocorreu um erro ao criar o pedido. Verifique os detalhes no console.',
+                        showConfirmButton: true
+                    });
+                });
+
+        }
+
+        document.getElementById("pedidoForm").addEventListener("submit", function (event) {
+            event.preventDefault(); // Evita o envio tradicional do formulário
+            enviarPedido(); // Chama a função de envio
+        });
+
+    </script>
+}
+

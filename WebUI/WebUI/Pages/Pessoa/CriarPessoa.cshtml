@@ -1,0 +1,144 @@
+﻿@page
+@model CreatePessoaModel
+@{
+    ViewData["Title"] = "Cadastro de Pessoa";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Cadastro de Pessoa</h2>
+
+    <form method="post">
+        <div class="form-group">
+            <label for="NomeCompleto">Nome Completo</label>
+            <input asp-for="Pessoa.NomeCompleto" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="CPF">CPF</label>
+            <input asp-for="Pessoa.CPF" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="Email">Email</label>
+            <input asp-for="Pessoa.Email" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="Telefone">Telefone</label>
+            <input asp-for="Pessoa.Telefone" class="form-control" />
+        </div>
+
+        <h3 class="mt-4">Endereços</h3>
+        <div id="enderecos">
+            <!-- Endereço Template -->
+            <div class="endereco" id="enderecoTemplate">
+                <div class="form-group">
+                    <label>Bairro</label>
+                    <input name="Pessoa.Enderecos[0].Bairro" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Cidade</label>
+                    <input name="Pessoa.Enderecos[0].Cidade" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Estado</label>
+                    <input name="Pessoa.Enderecos[0].Estado" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>CEP</label>
+                    <input name="Pessoa.Enderecos[0].CEP" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Endereço</label>
+                    <input name="Pessoa.Enderecos[0].TipoEndereco" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Logradouro</label>
+                    <input name="Pessoa.Enderecos[0].Logradouro" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Número</label>
+                    <input name="Pessoa.Enderecos[0].Numero" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Complemento</label>
+                    <input name="Pessoa.Enderecos[0].Complemento" class="form-control" />
+                </div>
+                <button type="button" class="btn btn-danger btn-sm" onclick="removeEndereco(this)">Remover Endereço</button>
+                <hr />
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-primary mt-3" onclick="addEndereco()">Adicionar Endereço</button>
+        <button type="submit" class="btn btn-success mt-3">Salvar</button>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        let enderecoIndex = 0;
+
+        // Função para adicionar um novo endereço
+        function addEndereco() {
+            enderecoIndex++;
+            const enderecoContainer = document.getElementById('enderecos');
+            const enderecoTemplate = document.querySelector('.endereco');
+            const newEndereco = enderecoTemplate.cloneNode(true);
+
+            // Atualiza os nomes dos campos para refletir o novo índice
+            newEndereco.querySelectorAll('input').forEach(input => {
+                input.name = input.name.replace('[0]', '[' + enderecoIndex + ']');
+                input.value = ''; // Limpa os campos
+            });
+
+            // Adiciona o novo endereço ao container
+            enderecoContainer.appendChild(newEndereco);
+        }
+
+        // Função para remover um endereço
+        function removeEndereco(button) {
+            const enderecoDiv = button.closest('.endereco');
+            const enderecoCount = document.querySelectorAll('.endereco').length;
+
+            // Impede a remoção da primeira seção de endereço
+            if (enderecoCount > 1) {
+                enderecoDiv.remove();
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro',
+                    text: 'Não é possível remover o primeiro endereço.',
+                    showConfirmButton: true
+                })
+            }
+        }
+    </script>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                title: "Sucesso!",
+                text: "@TempData["SuccessMessage"]",
+                icon: "success",
+                confirmButtonColor: '#3085d6'
+            });
+        });
+    </script>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                title: "Erro!",
+                text: "@TempData["ErrorMessage"]",
+                icon: "error",
+                confirmButtonColor: '#d33'
+            });
+        });
+    </script>
+}

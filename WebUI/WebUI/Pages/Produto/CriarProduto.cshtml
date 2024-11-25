@@ -1,0 +1,75 @@
+﻿@page
+@using System.Text.Json
+@model WebUI.Pages.Produto.CriarProdutoModel
+@{
+    ViewData["Title"] = "Criar Produto";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Criar Produto</h2>
+
+    <form method="post">
+        <div class="form-group">
+            <label asp-for="Produto.Nome" class="font-weight-bold">Nome do Produto</label>
+            <input asp-for="Produto.Nome" class="form-control" placeholder="Nome do produto" />
+            <span asp-validation-for="Produto.Nome" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Produto.Descricao" class="font-weight-bold">Descrição</label>
+            <input asp-for="Produto.Descricao" class="form-control" placeholder="Descrição do produto" />
+            <span asp-validation-for="Produto.Descricao" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Produto.PrecoUnitario" class="font-weight-bold">Preço Unitário</label>
+            <input asp-for="Produto.PrecoUnitario" class="form-control" placeholder="Preço unitário" />
+            <span asp-validation-for="Produto.PrecoUnitario" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Produto.SKU" class="font-weight-bold">SKU</label>
+            <input asp-for="Produto.SKU" class="form-control" placeholder="Código SKU" />
+            <span asp-validation-for="Produto.SKU" class="text-danger"></span>
+        </div>
+
+        <div class="form-group text-center mt-4">
+            <button type="submit" class="btn btn-primary btn-lg">Criar Produto</button>
+        </div>
+    </form>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var successMessage = @Html.Raw(JsonSerializer.Serialize(TempData["SuccessMessage"] ?? "Pedido criado com sucesso"));
+                Swal.fire({
+                    title: "Sucesso!",
+                    text: successMessage,
+                    icon: "success",
+                    confirmButtonColor: '#3085d6'
+                });
+            });
+        </script>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var errorMessage = @Html.Raw(JsonSerializer.Serialize(TempData["ErrorMessage"] ?? "Ocorreu um erro"));
+
+                Swal.fire({
+                    title: "Erro!",
+                    text: errorMessage,
+                    icon: "error",
+                    confirmButtonColor: '#d33'
+                });
+            });
+        </script>
+    }
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

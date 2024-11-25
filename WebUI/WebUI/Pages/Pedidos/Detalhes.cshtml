@@ -1,0 +1,51 @@
+﻿@page
+@model WebUI.Pages.Pedidos.DetalhesModel
+@{
+    ViewData["Title"] = "Detalhes do Pedido";
+}
+
+<div class="container my-4">
+    <h2 class="text-center">@ViewData["Title"]</h2>
+
+    <!-- Seção de Informações do Pedido -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4>Informações do Pedido</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Código do Pedido:</strong> @Model.PedidoId</p>
+            <p><strong>Nome do Cliente:</strong> @Model.NomeCliente</p>
+        </div>
+    </div>
+
+    <!-- Seção de Produtos -->
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            <h4>Produtos</h4>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Nome do Produto</th>
+                        <th scope="col">Quantidade</th>
+                        <th scope="col">Preço Unitário</th>
+                        <th scope="col">SKU</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var produto in Model.Itens)
+                    {
+                        <tr>
+                            <td>@produto.Nome</td>
+                            <td>@produto.Quantidade</td>
+                            <td>@produto.PrecoUnitario.ToString("C")</td>
+                            <td>@produto.SKU</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

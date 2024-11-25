@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestaoPedidos.Infra.Database.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241124180948_Initial")]
-    partial class Initial
+    [Migration("20241125013101_InitialV2")]
+    partial class InitialV2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

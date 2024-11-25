@@ -39,14 +39,14 @@ namespace GestaoPedidos.Application.Servicos
 
             if (!ValidarCPF(pessoa.CPF))
             {
-                return Result.Fail("CPF inválido.");
+                return Result.Fail("CPF invalido.");
             }
 
             if (await _pessoaRepositorio.GetByCPFAsync(pessoa.CPF) != null)
-                return Result.Fail("CPF já cadastrado.");
+                return Result.Fail("CPF ja cadastrado.");
 
             if (await _pessoaRepositorio.GetByEmailAsync(pessoa.Email) != null)
-                return Result.Fail("E-mail já cadastrado.");
+                return Result.Fail("E-mail ja cadastrado.");
 
             if (!enderecos.Any())
             {
@@ -57,12 +57,12 @@ namespace GestaoPedidos.Application.Servicos
             {
                 if (!ValidarCEP(endereco.CEP))
                 {
-                    return Result.Fail($"CEP inválido: {endereco.CEP}");
+                    return Result.Fail($"CEP invalido: {endereco.CEP}");
                 }
 
                 if (!ValidarTipoEndereco(endereco.TipoEndereco))
                 {
-                    return Result.Fail($"Tipo de endereço inválido: {endereco.TipoEndereco}. Deve ser 'Entrega', 'Cobrança' ou 'Ambos'.");
+                    return Result.Fail($"Tipo de endereço invalido: {endereco.TipoEndereco}. Deve ser 'Entrega', 'Cobrança' ou 'Ambos'.");
                 }
 
                 if (endereco.TipoEndereco.Equals("Cobrança", StringComparison.OrdinalIgnoreCase))

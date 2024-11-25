@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text.Json;
 using System.Text;
 using WebUI.ViewModel;
-using Microsoft.AspNetCore.Diagnostics;
 
 namespace WebUI.Pages.Pessoa
 {
@@ -24,6 +23,11 @@ namespace WebUI.Pages.Pessoa
 
         public async Task<IActionResult> OnPostAsync(PessoaViewModel pessoa)
         {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
             var client = _httpClientFactory.CreateClient();
             var jsonContent = new StringContent(
                 JsonSerializer.Serialize(pessoa),

@@ -34,19 +34,19 @@ namespace GestaoPedidos.Application.Servicos
                 Estado = x.Estado,
                 Numero = x.Numero,
                 Logradouro = x.Logradouro,
-                TipoEndereco = "Ambos"
+                TipoEndereco = x.TipoEndereco
             });
 
             if (!ValidarCPF(pessoa.CPF))
             {
-                return Result.Fail("CPF invalido.");
+                return Result.Fail("CPF inválido.");
             }
 
             if (await _pessoaRepositorio.GetByCPFAsync(pessoa.CPF) != null)
-                return Result.Fail("CPF ja cadastrado.");
+                return Result.Fail("CPF já cadastrado.");
 
             if (await _pessoaRepositorio.GetByEmailAsync(pessoa.Email) != null)
-                return Result.Fail("E-mail ja cadastrado.");
+                return Result.Fail("E-mail já cadastrado.");
 
             if (!enderecos.Any())
             {
@@ -57,7 +57,7 @@ namespace GestaoPedidos.Application.Servicos
             {
                 if (!ValidarCEP(endereco.CEP))
                 {
-                    return Result.Fail($"CEP invalido: {endereco.CEP}");
+                    return Result.Fail($"CEP inválido: {endereco.CEP}");
                 }
 
                 if (!ValidarTipoEndereco(endereco.TipoEndereco))

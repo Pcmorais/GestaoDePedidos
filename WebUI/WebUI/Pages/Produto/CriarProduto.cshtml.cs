@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text.Json;
 using System.Text;
 using WebUI.ViewModel;
+using System.Globalization;
 
 namespace WebUI.Pages.Produto
 {
@@ -24,6 +25,14 @@ namespace WebUI.Pages.Produto
 
         public async Task<IActionResult> OnPostAsync([FromForm] ProdutoViewModel produto)
         {
+
+            decimal valor;
+            if (decimal.TryParse(produto.PrecoUnitarioInput, NumberStyles.Any, CultureInfo.InvariantCulture, out valor))
+            {
+               produto.PrecoUnitario = valor;
+            }
+
+
             var client = _httpClientFactory.CreateClient();
             var jsonContent = new StringContent(
                 JsonSerializer.Serialize(produto),

@@ -22,9 +22,9 @@
         </div>
 
         <div class="form-group">
-            <label asp-for="Produto.PrecoUnitario" class="font-weight-bold">Preço Unitário</label>
-            <input asp-for="Produto.PrecoUnitario" class="form-control" placeholder="Preço unitário" />
-            <span asp-validation-for="Produto.PrecoUnitario" class="text-danger"></span>
+            <label asp-for="Produto.PrecoUnitarioInput" class="font-weight-bold">Preço Unitário</label>
+            <input asp-for="Produto.PrecoUnitarioInput" id="PrecoUnitarioInput" class="form-control" placeholder="Preço unitário" type="text" />
+            <span asp-validation-for="Produto.PrecoUnitarioInput" class="text-danger"></span>
         </div>
 
         <div class="form-group">
@@ -71,5 +71,21 @@
 </div>
 
 @section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#PrecoUnitarioInput').inputmask({
+                alias: 'decimal',
+                radixPoint: ".",
+                groupSeparator: "",
+                digits: 2,
+                autoGroup: false,
+                rightAlign: false,
+                allowMinus: false
+            });
+        });
+    </script>
     <partial name="_ValidationScriptsPartial" />
 }

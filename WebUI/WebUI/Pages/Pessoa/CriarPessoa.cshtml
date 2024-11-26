@@ -154,7 +154,7 @@
             var errorMessage = @Html.Raw(JsonSerializer.Serialize(TempData["ErrorMessage"] ?? "Ocorreu um erro"));
             Swal.fire({
                 title: "Erro!",
-                text: "@TempData["ErrorMessage"]",
+                text: errorMessage,
                 icon: "error",
                 confirmButtonColor: '#d33'
             });

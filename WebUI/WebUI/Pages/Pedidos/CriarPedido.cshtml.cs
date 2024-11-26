@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Text;
 using WebUI.ViewModel;
+using System.Net;
 
 namespace WebUI.Pages.Pedidos
 {
@@ -74,17 +75,31 @@ namespace WebUI.Pages.Pedidos
         private async Task<List<PessoaViewModel>> GetClientesAsync()
         {
             var response = await _httpClient.GetAsync($"{_baseUrl}/api/Pessoa");
-            response.EnsureSuccessStatusCode();
+
+            if (response.StatusCode == HttpStatusCode.NoContent || response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return new List<PessoaViewModel>();
+            }
+
+            response.EnsureSuccessStatusCode(); 
+
             var clientes = await response.Content.ReadFromJsonAsync<List<PessoaViewModel>>();
-            return clientes;
+            return clientes ?? new List<PessoaViewModel>(); 
         }
 
         private async Task<List<ProdutoViewModel>> GetProdutosAsync()
         {
             var response = await _httpClient.GetAsync($"{_baseUrl}/api/Produto");
+
+            if (response.StatusCode == HttpStatusCode.NoContent || response.StatusCode == HttpStatusCode.NotFound)
+            {
+                return new List<ProdutoViewModel>();
+            }
+
             response.EnsureSuccessStatusCode();
+
             var produtos = await response.Content.ReadFromJsonAsync<List<ProdutoViewModel>>();
-            return produtos;
+            return produtos ?? new List<ProdutoViewModel>();
         }
 
         private async Task<List<EnderecoViewModel>> GetEnderecosAsync(int clienteId)

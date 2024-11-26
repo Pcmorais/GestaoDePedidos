@@ -4,69 +4,79 @@
     ViewData["Title"] = "Novo Pedido";
 }
 
-<form id="pedidoForm" method="post">
-    <!-- Selecione o Cliente -->
-    <div class="form-group mb-4">
-        <label for="clienteSelect" class="font-weight-bold">Cliente</label>
-        <select id="clienteSelect" asp-for="Pedido.ClienteId" class="form-control" required onchange="buscarEnderecos()">
-            <option value="">Selecione um cliente</option>
-            @foreach (var cliente in Model.Pessoas)
-            {
-                <option value="@cliente.Id">@cliente.NomeCompleto</option>
-            }
-        </select>
+@if (Model.Pessoas == null || !Model.Pessoas.Any() || Model.Produtos == null || !Model.Produtos.Any())
+{
+    <div class="alert alert-warning" role="alert">
+        Para criar um pedido, é necessário cadastrar clientes e produtos.
     </div>
+} else
+{
 
-    <!-- Endereço de Entrega -->
-    <div class="form-group mb-4">
-        <label for="enderecoEntregaSelect" class="font-weight-bold">Endereço de Entrega</label>
-        <select id="enderecoEntregaSelect" asp-for="Pedido.EnderecoEntregaId" class="form-control" required></select>
-    </div>
-
-    <!-- Endereço de Cobrança -->
-    <div class="form-group mb-4">
-        <label for="enderecoCobrancaSelect" class="font-weight-bold">Endereço de Cobrança</label>
-        <select id="enderecoCobrancaSelect" asp-for="Pedido.EnderecoCobrancaId" class="form-control" required></select>
-    </div>
-
-    <!-- Adicionar Produtos -->
-    <div id="produtos" class="mb-4">
-        <h4 class="font-weight-bold">Adicionar Produtos</h4>
-        <div class="form-group">
-            <label for="produtoSelect">Produto</label>
-            <select id="produtoSelect" class="form-control">
-                @foreach (var produto in Model.Produtos)
+    <form id="pedidoForm" method="post">
+        <!-- Selecione o Cliente -->
+        <div class="form-group mb-4">
+            <label for="clienteSelect" class="font-weight-bold">Cliente</label>
+            <select id="clienteSelect" asp-for="Pedido.ClienteId" class="form-control" required onchange="buscarEnderecos()">
+                <option value="">Selecione um cliente</option>
+                @foreach (var cliente in Model.Pessoas)
                 {
-                    <option value="@produto.Id" data-preco="@produto.PrecoUnitario">@produto.Nome</option>
+                    <option value="@cliente.Id">@cliente.NomeCompleto</option>
                 }
             </select>
         </div>
 
-        <div class="form-group">
-            <label for="quantidade">Quantidade</label>
-            <input type="number" id="quantidade" class="form-control" min="1" required />
+        <!-- Endereço de Entrega -->
+        <div class="form-group mb-4">
+            <label for="enderecoEntregaSelect" class="font-weight-bold">Endereço de Entrega</label>
+            <select id="enderecoEntregaSelect" asp-for="Pedido.EnderecoEntregaId" class="form-control" required></select>
         </div>
 
-        <button type="button" class="btn btn-secondary mt-2" onclick="adicionarProduto()">Adicionar Produto</button>
-    </div>
+        <!-- Endereço de Cobrança -->
+        <div class="form-group mb-4">
+            <label for="enderecoCobrancaSelect" class="font-weight-bold">Endereço de Cobrança</label>
+            <select id="enderecoCobrancaSelect" asp-for="Pedido.EnderecoCobrancaId" class="form-control" required></select>
+        </div>
 
-    <h4 class="font-weight-bold mb-3">Itens do Pedido</h4>
-    <table class="table table-striped table-bordered" id="tabelaItens">
-        <thead>
-            <tr>
-                <th>Produto</th>
-                <th>Quantidade</th>
-                <th>Preço Unitário</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+        <!-- Adicionar Produtos -->
+        <div id="produtos" class="mb-4">
+            <h4 class="font-weight-bold">Adicionar Produtos</h4>
+            <div class="form-group">
+                <label for="produtoSelect">Produto</label>
+                <select id="produtoSelect" class="form-control">
+                    @foreach (var produto in Model.Produtos)
+                    {
+                        <option value="@produto.Id" data-preco="@produto.PrecoUnitario">@produto.Nome</option>
+                    }
+                </select>
+            </div>
 
-    <div class="text-right mt-4">
-        <button type="submit" class="btn btn-primary">Enviar Pedido</button>
-    </div>
-</form>
+            <div class="form-group">
+                <label for="quantidade">Quantidade</label>
+                <input type="number" id="quantidade" class="form-control" min="1" required />
+            </div>
+
+            <button type="button" class="btn btn-secondary mt-2" onclick="adicionarProduto()">Adicionar Produto</button>
+        </div>
+
+        <h4 class="font-weight-bold mb-3">Itens do Pedido</h4>
+        <table class="table table-striped table-bordered" id="tabelaItens">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                    <th>Preço Unitário</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div class="text-right mt-4">
+            <button type="submit" class="btn btn-primary">Enviar Pedido</button>
+        </div>
+    </form>
+}
+
 
 
 @section Scripts {
